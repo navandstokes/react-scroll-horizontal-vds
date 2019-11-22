@@ -43,7 +43,7 @@ export default class ScrollHorizontal extends Component {
   }
 
   onScrollStart(e) {
-    e.preventDefault()
+//     e.preventDefault()
     // If scrolling on x axis, change to y axis. Otherwise, just get the y deltas.
     // (Basically, this for Apple mice that allow horizontal scrolling by default)
     var rawData = e.deltaY ? e.deltaY : e.deltaX
@@ -106,8 +106,13 @@ export default class ScrollHorizontal extends Component {
       // Calculate the bounds of the scroll area
       let el = DOM.findDOMNode(this.hScrollParent)
 
-      let max = el.lastElementChild.scrollWidth
-      let win = el.offsetWidth
+                                  if (el) {
+                                    var max = el.lastElementChild.scrollWidth;
+                                    var win = el.offsetWidth;          
+                                  } else {
+                                    var max = 1500
+                                    var min = 1300
+                                  }
 
       // Get the new animation values
       var curr = this.state.animValues
@@ -120,6 +125,7 @@ export default class ScrollHorizontal extends Component {
         this.resetMin()
       } else if (curr <= bounds) {
         var x = bounds + 1
+                                    if (max <= win) { x = 0 }
         this.resetMax(x)
       }
     })
@@ -143,7 +149,7 @@ export default class ScrollHorizontal extends Component {
       height: height || `100%`,
       width: width || `100%`,
       overflow: `hidden`,
-      position: `relative`,
+//       position: `relative`,
       ...style
     }
 
@@ -154,19 +160,19 @@ export default class ScrollHorizontal extends Component {
           this.hScrollParent = r
         }}
         style={styles}
-        className={`scroll-horizontal ${this.props.className || ''}`}
+        className={`scroll-horizontal relative-l ${this.props.className || ''}`}
       >
         <Motion style={{ z: spring(this.state.animValues, springConfig) }}>
           {({ z }) => {
             const scrollingElementStyles = {
               transform: `translate3d(${z}px, 0,0)`,
-              display: `inline-flex`,
+//               display: `inline-flex`,
               height: `100%`,
-              position: `absolute`,
+//               position: `absolute`,
               willChange: `transform`
             }
 
-            return <div style={scrollingElementStyles}>{children}</div>
+            return <div style={scrollingElementStyles} className="flex-l absolute-l">{children}</div>
           }}
         </Motion>
       </div>
